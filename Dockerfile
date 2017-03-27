@@ -3,6 +3,7 @@ MAINTAINER James Walton <jwaltonmedia@gmail.com>
 
 RUN apt-get update && \
       apt-get install -y \
+      nano \
       build-essential \
       cmake \
       git \
@@ -18,7 +19,8 @@ RUN apt-get update && \
       libtiff-dev \
       libjasper-dev \
       libavformat-dev \
-      libpq-dev
+      libpq-dev \
+      libopencv-*
 
 RUN pip install numpy
 
