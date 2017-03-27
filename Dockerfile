@@ -13,6 +13,9 @@ RUN apt-get update && \
       pkg-config \
       libswscale-dev \
       libtbb2 \
+      libdc1394-22-dev \
+      libdc1394-22 \
+      libdc1394-utils \
       libtbb-dev \
       libjpeg-dev \
       libpng-dev \
@@ -23,6 +26,7 @@ RUN apt-get update && \
       libopencv-*
 
 RUN pip install numpy
+RUN pip install matplotlib
 
 WORKDIR /
 RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
