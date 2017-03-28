@@ -26,7 +26,6 @@ RUN apt-get update && \
       libopencv-*
 
 RUN pip install numpy
-RUN pip install matplotlib
 
 WORKDIR /
 RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
@@ -54,4 +53,4 @@ RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
 && rm /3.2.0.zip \
 && rm -r /opencv-3.2.0
 
-RUN pip install flake8 pep8 --upgrade
+RUN pip install matplotlib flake8 pep8 --upgrade
