@@ -3,14 +3,17 @@ MAINTAINER James Walton <jwaltonmedia@gmail.com>
 
 RUN apt-get update && \
       apt-get install -y \
+      curl \
       nano \
       build-essential \
       cmake \
+      g++ \
       git \
       wget \
       unzip \
       yasm \
       pkg-config \
+      libqt4-dev \
       libswscale-dev \
       libtbb2 \
       libdc1394-22-dev \
@@ -40,6 +43,7 @@ RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
   -DWITH_OPENGL=ON \
   -DWITH_OPENCL=ON \
   -DWITH_IPP=ON \
+  -DWITH_QT=YES \
   -DWITH_TBB=ON \
   -DWITH_EIGEN=ON \
   -DWITH_V4L=ON \

@@ -6,8 +6,11 @@ DOCKER_INSTANCE = 1
 DOCKER_PORTS =
 DOCKER_MAPPED_VOLUMES = \
   -v $(shell pwd)/src:/src \
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
-  -v /dev/video0:/dev/video0
+  --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  --privileged -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw \
+  -v $(HOME)/.Xauthority:/.Xauthority:rw
 DOCKER_ENV = \
-  --env DISPLAY=:0 \
-  --env QT_X11_NO_MITSHM=1
+  -e DISPLAY=$(DISPLAY) \
+  -e XAUTHORITY=/.Xauthority \
+  --env "QT_X11_NO_MITSHM=1" \
+  --ipc=host
