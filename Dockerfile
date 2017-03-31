@@ -32,9 +32,10 @@ RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
 && unzip 3.2.0.zip \
 && mkdir /opencv-3.2.0/cmake_binary \
 && cd /opencv-3.2.0/cmake_binary \
-&& cmake -DBUILD_TIFF=ON \
+&& cmake -D BUILD_TIFF=ON \
   -DBUILD_opencv_java=OFF \
-  -DWITH_CUDA=OFF \
+  -DWITH_CUDA=ON \
+  -DWITH_1394=ON \
   -DENABLE_AVX=ON \
   -DWITH_OPENGL=ON \
   -DWITH_OPENCL=ON \

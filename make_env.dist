@@ -4,7 +4,10 @@ DOCKER_REPOSITORY = opencv-service
 DOCKER_CONTAINER_NAME = opencv-service
 DOCKER_INSTANCE = 1
 DOCKER_PORTS =
-DOCKER_MAPPED_VOLUMES = --privileged -v $(shell pwd)/src:/src --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro
+DOCKER_MAPPED_VOLUMES = \
+  -v $(shell pwd)/src:/src \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+  -v /dev/video0:/dev/video0
 DOCKER_ENV = \
-  -e DISPLAY=$(DISPLAY) \
-  --env="QT_X11_NO_MITSHM=1"
+  --env DISPLAY=:0 \
+  --env QT_X11_NO_MITSHM=1
