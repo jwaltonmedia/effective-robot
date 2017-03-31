@@ -59,3 +59,4 @@ RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
 && rm -r /opencv-3.2.0
 
 RUN pip install matplotlib flake8 pep8 --upgrade
+RUN pip install Flask
