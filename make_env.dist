@@ -3,14 +3,10 @@ DOCKER_IMAGE_VERSION ?= latest
 DOCKER_REPOSITORY = opencv-service
 DOCKER_CONTAINER_NAME = opencv-service
 DOCKER_INSTANCE = 1
-DOCKER_PORTS =
+DOCKER_PORTS = -p 5000:5000
 DOCKER_MAPPED_VOLUMES = \
-  -v $(shell pwd)/src:/src \
-  --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-  --privileged -v /tmp/.docker.xauth:/tmp/.docker.xauth:rw \
-  -v $(HOME)/.Xauthority:/.Xauthority:rw
+  -v $(shell pwd)/src:/src
 DOCKER_ENV = \
-  -e DISPLAY=$(DISPLAY) \
-  -e XAUTHORITY=/.Xauthority \
-  --env "QT_X11_NO_MITSHM=1" \
-  --ipc=host
+  -e FLASK_DEBUG=true \
+  -e FLASK_HOST='0.0.0.0' \
+  -e FLASK_PORT=5000
