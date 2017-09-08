@@ -1,6 +1,9 @@
 *.tags*
+*.log*
 make_env
 .DS_Store
-src/build
+
+src/img/build/
 
 __pycache__
+node_modules/

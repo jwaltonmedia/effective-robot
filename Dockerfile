@@ -1,62 +1,132 @@
-FROM python:3.6
-MAINTAINER James Walton <jwaltonmedia@gmail.com>
+FROM ubuntu:14.04
 
-RUN apt-get update && \
-      apt-get install -y \
-      curl \
-      nano \
-      build-essential \
-      cmake \
-      g++ \
-      git \
-      wget \
-      unzip \
-      yasm \
-      pkg-config \
-      libqt4-dev \
-      libswscale-dev \
-      libtbb2 \
-      libdc1394-22-dev \
-      libdc1394-22 \
-      libdc1394-utils \
-      libtbb-dev \
-      libjpeg-dev \
-      libpng-dev \
-      libtiff-dev \
-      libjasper-dev \
-      libavformat-dev \
-      libpq-dev \
-      libopencv-*
+MAINTAINER James Walton <james.walton@frogdesign.com>
 
-RUN pip install numpy
+# Install some dependencies
+RUN apt-get update && apt-get install -y \
+		bc \
+		build-essential \
+		cmake \
+		curl \
+		g++ \
+		gfortran \
+		git \
+		libffi-dev \
+		libfreetype6-dev \
+		libhdf5-dev \
+		libjpeg-dev \
+		liblcms2-dev \
+		libopenblas-dev \
+		liblapack-dev \
+		libopenjpeg2 \
+		libpng12-dev \
+		libssl-dev \
+		libtiff5-dev \
+		libwebp-dev \
+		libzmq3-dev \
+		nano \
+		pkg-config \
+		python-dev \
+		software-properties-common \
+		unzip \
+		vim \
+		wget \
+		zlib1g-dev \
+		qt5-default \
+		libvtk6-dev \
+		zlib1g-dev \
+		libjpeg-dev \
+		libwebp-dev \
+		libpng-dev \
+		libtiff5-dev \
+		libjasper-dev \
+		libopenexr-dev \
+		libgdal-dev \
+		libdc1394-22-dev \
+		libavcodec-dev \
+		libavformat-dev \
+		libswscale-dev \
+		libtheora-dev \
+		libvorbis-dev \
+		libxvidcore-dev \
+		libx264-dev \
+		yasm \
+		libopencore-amrnb-dev \
+		libopencore-amrwb-dev \
+		libv4l-dev \
+		libxine2-dev \
+		libtbb-dev \
+		libeigen3-dev \
+		python-dev \
+		python-tk \
+		python-numpy \
+		python3-dev \
+		python3-tk \
+		python3-numpy \
+		ant \
+		default-jdk \
+		doxygen \
+		&& \
+	apt-get clean && \
+	apt-get autoremove && \
+	rm -rf /var/lib/apt/lists/* && \
+# Link BLAS library to use OpenBLAS using the alternatives mechanism (https://www.scipy.org/scipylib/building/linux.html#debian-ubuntu)
+	update-alternatives --set libblas.so.3 /usr/lib/openblas-base/libblas.so.3
 
-WORKDIR /
-RUN wget https://github.com/Itseez/opencv/archive/3.2.0.zip \
-&& unzip 3.2.0.zip \
-&& mkdir /opencv-3.2.0/cmake_binary \
-&& cd /opencv-3.2.0/cmake_binary \
-&& cmake -D BUILD_TIFF=ON \
-  -DBUILD_opencv_java=OFF \
-  -DWITH_CUDA=ON \
-  -DWITH_1394=ON \
-  -DENABLE_AVX=ON \
-  -DWITH_OPENGL=ON \
-  -DWITH_OPENCL=ON \
-  -DWITH_IPP=ON \
-  -DWITH_QT=YES \
-  -DWITH_TBB=ON \
-  -DWITH_EIGEN=ON \
-  -DWITH_V4L=ON \
-  -DBUILD_TESTS=OFF \
-  -DBUILD_PERF_TESTS=OFF \
-  -DCMAKE_BUILD_TYPE=RELEASE \
-  -DCMAKE_INSTALL_PREFIX=$(python3.6 -c "import sys; print(sys.prefix)") \
-  -DPYTHON_EXECUTABLE=$(which python3.6) \
-  -DPYTHON_INCLUDE_DIR=$(python3.6 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-  -DPYTHON_PACKAGES_PATH=$(python3.6 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") .. \
-&& make install \
-&& rm /3.2.0.zip \
-&& rm -r /opencv-3.2.0
+# Install pip
+RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
+	python get-pip.py && \
+	rm get-pip.py
 
-RUN pip install matplotlib flake8 pep8 --upgrade
-RUN pip install Flask
+# Add SNI support to Python
+RUN pip --no-cache-dir install \
+		pyopenssl \
+		ndg-httpsclient \
+		pyasn1
+
+# Install useful Python packages
+RUN apt-get update && apt-get install -y \
+		python-numpy \
+		python-scipy \
+		python-nose \
+		python-h5py \
+		python-skimage \
+		python-matplotlib \
+		python-pandas \
+		python-sklearn \
+		python-sympy \
+		&& \
+	apt-get clean && \
+	apt-get autoremove && \
+	rm -rf /var/lib/apt/lists/*
+
+# Install other useful Python packages using pip
+RUN pip --no-cache-dir install --upgrade ipython && \
+	pip --no-cache-dir install \
+		Cython \
+		ipykernel \
+		jupyter \
+		path.py \
+		Pillow \
+		pygments \
+		six \
+		sphinx \
+		wheel \
+		zmq \
+		&& \
+	python -m ipykernel.kernelspec
+
+# Install OpenCV
+RUN git clone --depth 1 https://github.com/opencv/opencv.git /root/opencv && \
+	cd /root/opencv && \
+	mkdir build && \
+	cd build && \
+	cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON -DBUILD_EXAMPLES=ON .. && \
+	make -j"$(nproc)"  && \
+	make install && \
+	ldconfig && \
+	echo 'ln /dev/null /dev/raw1394' >> ~/.bashrc
+
+
+WORKDIR "/root"
+CMD ["/bin/bash"]
