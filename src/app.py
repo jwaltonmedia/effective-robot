@@ -1,7 +1,9 @@
 from flask import Flask
 import os
+import cv2
 
 app = Flask(__name__)
+vc = cv2.VideoCapture(0)
 
 @app.route("/")
 def index():

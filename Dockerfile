@@ -113,20 +113,14 @@ RUN pip --no-cache-dir install --upgrade ipython && \
 		sphinx \
 		wheel \
 		zmq \
+		opencv-python \
 		&& \
 	python -m ipykernel.kernelspec
 
-# Install OpenCV
-RUN git clone --depth 1 https://github.com/opencv/opencv.git /root/opencv && \
-	cd /root/opencv && \
-	mkdir build && \
-	cd build && \
-	cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON -DBUILD_EXAMPLES=ON .. && \
-	make -j"$(nproc)"  && \
-	make install && \
-	ldconfig && \
-	echo 'ln /dev/null /dev/raw1394' >> ~/.bashrc
+RUN mkdir /src
+COPY src /src
+WORKDIR /src
+RUN pip install -r requirements.txt
 
-
-WORKDIR "/root"
-CMD ["/bin/bash"]
+EXPOSE 5000
+CMD ["python3", "app.py"]
